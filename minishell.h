@@ -6,7 +6,7 @@
 /*   By: laroges <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/08 13:19:44 by laroges           #+#    #+#             */
-/*   Updated: 2024/03/08 18:27:33 by laroges          ###   ########.fr       */
+/*   Updated: 2024/03/13 16:24:34 by laroges          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,9 @@ foreground pipeline.
  
 Ressources :
 https://m4nnb3ll.medium.com/minishell-building-a-mini-bash-a-42-project-b55a10598218
+https://achrafbelarif.medium.com/42cursus-minishell-29cd25f972e6
+https://www.youtube.com/watch?v=ubt-UjcQUYg
+
 */
 
 #ifndef MINISHELL_H
@@ -77,14 +80,19 @@ typedef enum	e_bool
 	NOTOKEN
 }		t_bool;
 
+typedef struct	s_data
+{
+	
+}		t_data;
+
 // Describes a simple command and arguments
 typedef struct	s_simple_cmd
 {
 	int	nb_of_available_arg; // Available space for arguments currently preallocated
 	int	nb_arg; // Number of arguments
 	char	**args; // Array of arguments
-	s_simple_cmd(); // ?
-	void	insert_arg(char *arg); // ?
+//	s_simple_cmd(); // ?
+//	void	insert_arg(char *arg); // ?
 }		t_simple_cmd;
 
 // Describes a complete command with the multiple pipes if any. And input/output redirection if any.
@@ -92,23 +100,23 @@ typedef struct	s_cmd
 {
 	int	nb_of_available_simple_cmd;
 	int	nb_of_simple_cmd;
-	t_simple_cmd **simple_cmd;
+//	t_simple_cmd **simple_cmd;
 	char	*outfile;
 	char	*infile;
 	char	*errfile;
 	int	background;
-	void	prompt();
-	void	print();
-	void	execute();
-	void	clear();
-	s_cmd(); // ?
-	void	insert_simple_cmd(t_simple_cmd *simple_cmd);
-	static struct	s_cmd	*current_cmd;
-	static	t_simple_cmd *current_simple_cmd;
+//	void	prompt();
+//	void	print();
+//	void	execute();
+//	void	clear();
+//	s_cmd(); // ?
+//	void	insert_simple_cmd(t_simple_cmd *simple_cmd);
+//	static struct	s_cmd	*current_cmd;
+//	static	t_simple_cmd *current_simple_cmd;
 }		t_cmd;
 
 // Prompt and history
-void	prompt(void);
+void	prompt(int argc, char **argv, char **envp);
 
 //__________________________________________________________________________________________________________________________________________
 // Lexer
@@ -148,13 +156,18 @@ void	prompt(void);
 	// 2. Create a new process for each SIMPLE COMMAND in the array.
 	// 3. If necessary, create pipes to communicate the ouput of a process to the input of the next one. And it will redirect the standard input, standard output and standard error when there are any redirections.
 	// Creating new processes : start by CREATING A NEW PROCESS FOR EACH COMMAND in the pipeline and making the parent wait for the last command. This will allowe running simple commands such as "ls -al".
-
+void	exec_command(char *input);
 
 //__________________________________________________________________________________________________________________________________________
 // Handle characters
 int	is_metacharacter(char *c); // To handle : < << > >> | $ 
 
 //__________________________________________________________________________________________________________________________________________
+
+// Clean memory
+void	free_str(char **str);
+
+
 /*
  ******************************************		SYNTAXE SHELL			****************************************************
 

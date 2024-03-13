@@ -1,21 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: laroges <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/08 13:35:03 by laroges           #+#    #+#             */
-/*   Updated: 2024/03/13 15:33:04 by laroges          ###   ########.fr       */
+/*   Created: 2024/03/13 15:52:15 by laroges           #+#    #+#             */
+/*   Updated: 2024/03/13 15:52:51 by laroges          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	main(int argc, char **argv, char **envp)
+void	free_str(char **str)
 {
-	(void)argc;
-	(void)argv;
-	prompt(argc, argv, envp);
-	return (0);
+	int             i;
+
+	i = 0;
+	while (str[i])
+	{
+		free(str[i]);
+		str[i] = NULL;
+		i++;
+	}
+	free(str);
+	str = NULL;
 }
+
