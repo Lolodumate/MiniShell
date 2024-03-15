@@ -6,7 +6,7 @@
 /*   By: laroges <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/08 13:19:44 by laroges           #+#    #+#             */
-/*   Updated: 2024/03/13 16:24:34 by laroges          ###   ########.fr       */
+/*   Updated: 2024/03/15 12:11:42 by laroges          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,11 +49,25 @@ foreground pipeline.
 ◦ unset with no options
 ◦ env with no options or arguments
 ◦ exit with no options
- 
+
+1. Display the prompt
+2. Reading user input
+3. Parsing the command
+4. Searching for the command
+5. Creating a child process
+6. Executing the command
+7. Wait for command completion
+8. Displying output
+9. Returning to the prompt
+10. Exiting the Shell
+
+
 Ressources :
+
 https://m4nnb3ll.medium.com/minishell-building-a-mini-bash-a-42-project-b55a10598218
 https://achrafbelarif.medium.com/42cursus-minishell-29cd25f972e6
 https://www.youtube.com/watch?v=ubt-UjcQUYg
+Simple Shell : https://www.youtube.com/watch?v=_Eioyt7C67M
 
 */
 
@@ -63,6 +77,8 @@ https://www.youtube.com/watch?v=ubt-UjcQUYg
 #include "libft.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/types.h>
+#include <unistd.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 
@@ -116,13 +132,19 @@ typedef struct	s_cmd
 }		t_cmd;
 
 // Prompt and history
-void	prompt(int argc, char **argv, char **envp);
+void	prompt(int argc, char **argv, char **envp); // Each command must be executed in a child process. Then the prompt is displayed again.
 
 //__________________________________________________________________________________________________________________________________________
 // Lexer
 	// A Lexer takes the input characters and put them together into words called tokens, and a parser that processes the tokens according to a grammar and build the command table.	
 	// The tokens are described in a file shell.l.
 	// The file shell.l is processed with a program called LEX that generates the lexical analyzer.
+
+// tokens.c
+int	is_blank(char c);
+char	**tokenize(char **argv);
+
+
 
 //__________________________________________________________________________________________________________________________________________
 // Parser
