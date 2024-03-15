@@ -6,7 +6,7 @@
 /*   By: laroges <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/08 13:19:44 by laroges           #+#    #+#             */
-/*   Updated: 2024/03/15 17:53:51 by laroges          ###   ########.fr       */
+/*   Updated: 2024/03/15 18:25:28 by laroges          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ foreground pipeline.
 5. Creating a child process
 6. Executing the command
 7. Wait for command completion
-8. Displying output
+8. Displaying output
 9. Returning to the prompt
 10. Exiting the Shell
 
@@ -195,7 +195,8 @@ int	is_metacharacter(char *c); // To handle : < << > >> | $
 //__________________________________________________________________________________________________________________________________________
 
 // Clean memory
-void	free_str(char **str);
+void	free_str(char *str);
+void	free_double_str(char **str);
 void	free_data(t_data *d);
 
 /*

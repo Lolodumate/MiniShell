@@ -6,7 +6,7 @@
 /*   By: laroges <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 15:48:36 by laroges           #+#    #+#             */
-/*   Updated: 2024/03/15 17:58:36 by laroges          ###   ########.fr       */
+/*   Updated: 2024/03/15 19:41:37 by laroges          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,8 @@
 
 void	exec_command(t_data *d, char *input)
 {
-	int		pid;
+	pid_t		pid;
+	int		status;
 	char    **cmd;
 	char	*try_path;
 
@@ -24,16 +25,33 @@ void	exec_command(t_data *d, char *input)
 	if (try_path == NULL)
 	{
 		perror("command not found");
-		exit(0);
+		return ;
 	}
 	pid = fork();
 	if (pid == -1)
 		exit(EXIT_FAILURE);
 	if (pid == 0)
-		execve(try_path, cmd, NULL);
+	{
+		if (execve(try_path, cmd, NULL) == -1)
+		{
+			free_str(try_path);
+			perror("command not found");
+			exit(EXIT_FAILURE);
+		}
+	}
 	else
-		wait(NULL);
-	free_str(cmd);
+	{
+		if (wait(&status) == -1)
+		{
+			perror("wait");
+			exit(EXIT_FAILURE);
+		}
+		if (WIFEXITED(status))
+			WTERMSIG(status);
+
+	}
+	free_str(try_path);
+	free_double_str(cmd);
 }
 
 char	*find_the_right_path(t_data *d, char *input)

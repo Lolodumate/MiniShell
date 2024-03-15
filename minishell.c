@@ -6,7 +6,7 @@
 /*   By: laroges <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/08 13:31:25 by laroges           #+#    #+#             */
-/*   Updated: 2024/03/15 16:52:49 by laroges          ###   ########.fr       */
+/*   Updated: 2024/03/15 19:48:45 by laroges          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,5 +27,6 @@ void	prompt(t_data *d, int argc, char **argv, char **envp)
 		if (ft_strlen(input) > 0)
 			add_history(input);
 		exec_command(d, input);
+		free(input);
 	}
 }

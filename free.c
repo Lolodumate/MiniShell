@@ -6,13 +6,21 @@
 /*   By: laroges <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 15:52:15 by laroges           #+#    #+#             */
-/*   Updated: 2024/03/15 15:31:50 by laroges          ###   ########.fr       */
+/*   Updated: 2024/03/15 19:45:10 by laroges          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	free_str(char **str)
+void	free_str(char *str)
+{
+	if (!str)
+		return ;
+	free(str);
+	str = NULL;
+}
+
+void	free_double_str(char **str)
 {
 	int             i;
 
