@@ -6,12 +6,14 @@
 #    By: laroges <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/24 01:52:45 by laroges           #+#    #+#              #
-#    Updated: 2024/03/13 16:09:32 by laroges          ###   ########.fr        #
+#    Updated: 2024/03/15 15:18:26 by laroges          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 SRC =	main.c \
+	init.c \
 	minishell.c \
+	path.c \
 	execute.c \
 	free.c \
 

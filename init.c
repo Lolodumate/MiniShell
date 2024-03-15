@@ -1,26 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: laroges <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/08 13:35:03 by laroges           #+#    #+#             */
-/*   Updated: 2024/03/15 17:54:50 by laroges          ###   ########.fr       */
+/*   Created: 2024/03/15 15:08:25 by laroges           #+#    #+#             */
+/*   Updated: 2024/03/15 17:53:27 by laroges          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	main(int argc, char **argv, char **envp)
+t_data	*init_data(t_data *d, char **envp)
 {
-	t_data *d;
-	(void)argc;
-	(void)argv;
-
-	d = NULL;
-	d = init_data(d, envp);
-	prompt(d, argc, argv, envp);
-	free_data(d);
-	return (0);
+	d = malloc(sizeof(t_data));
+	if (!d)
+		exit(EXIT_FAILURE);
+	d->paths = get_paths(envp);
+	return (d);
 }

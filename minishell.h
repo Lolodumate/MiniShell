@@ -6,7 +6,7 @@
 /*   By: laroges <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/08 13:19:44 by laroges           #+#    #+#             */
-/*   Updated: 2024/03/15 12:11:42 by laroges          ###   ########.fr       */
+/*   Updated: 2024/03/15 17:53:51 by laroges          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,7 @@ Simple Shell : https://www.youtube.com/watch?v=_Eioyt7C67M
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
+#include <sys/wait.h>
 #include <unistd.h>
 #include <readline/readline.h>
 #include <readline/history.h>
@@ -98,7 +99,7 @@ typedef enum	e_bool
 
 typedef struct	s_data
 {
-	
+	char	**paths;
 }		t_data;
 
 // Describes a simple command and arguments
@@ -131,8 +132,10 @@ typedef struct	s_cmd
 //	static	t_simple_cmd *current_simple_cmd;
 }		t_cmd;
 
+t_data	*init_data(t_data *d, char **envp);
+
 // Prompt and history
-void	prompt(int argc, char **argv, char **envp); // Each command must be executed in a child process. Then the prompt is displayed again.
+void	prompt(t_data *d, int argc, char **argv, char **envp); // Each command must be executed in a child process. Then the prompt is displayed again.
 
 //__________________________________________________________________________________________________________________________________________
 // Lexer
@@ -144,6 +147,11 @@ void	prompt(int argc, char **argv, char **envp); // Each command must be execute
 int	is_blank(char c);
 char	**tokenize(char **argv);
 
+// path.c
+int	find_path(char **envp, char *to_find);
+char	*add_backslash(char *path);
+char	**check_backslash(char **paths);
+char	**get_paths(char **envp);
 
 
 //__________________________________________________________________________________________________________________________________________
@@ -178,8 +186,8 @@ char	**tokenize(char **argv);
 	// 2. Create a new process for each SIMPLE COMMAND in the array.
 	// 3. If necessary, create pipes to communicate the ouput of a process to the input of the next one. And it will redirect the standard input, standard output and standard error when there are any redirections.
 	// Creating new processes : start by CREATING A NEW PROCESS FOR EACH COMMAND in the pipeline and making the parent wait for the last command. This will allowe running simple commands such as "ls -al".
-void	exec_command(char *input);
-
+void	exec_command(t_data *d, char *input);
+char	*find_the_right_path(t_data*d, char *input);
 //__________________________________________________________________________________________________________________________________________
 // Handle characters
 int	is_metacharacter(char *c); // To handle : < << > >> | $ 
@@ -188,7 +196,7 @@ int	is_metacharacter(char *c); // To handle : < << > >> | $
 
 // Clean memory
 void	free_str(char **str);
-
+void	free_data(t_data *d);
 
 /*
  ******************************************		SYNTAXE SHELL			****************************************************
