@@ -14,6 +14,8 @@ SRC =	main.c \
 	init.c \
 	minishell.c \
 	path.c \
+	builtin.c \
+	ft_pwd.c \
 	execute.c \
 	free.c \
 

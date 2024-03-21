@@ -186,6 +186,15 @@ char	**get_paths(char **envp);
 	// 2. Create a new process for each SIMPLE COMMAND in the array.
 	// 3. If necessary, create pipes to communicate the ouput of a process to the input of the next one. And it will redirect the standard input, standard output and standard error when there are any redirections.
 	// Creating new processes : start by CREATING A NEW PROCESS FOR EACH COMMAND in the pipeline and making the parent wait for the last command. This will allowe running simple commands such as "ls -al".
+
+// builtin.c
+int	is_builtin(char *cmd);
+void	exec_builtin(char **args);
+
+// ft_pwd.c
+int	ft_pwd(void);
+
+// execute.c
 void	exec_command(t_data *d, char *input);
 char	*find_the_right_path(t_data*d, char *input);
 //__________________________________________________________________________________________________________________________________________
