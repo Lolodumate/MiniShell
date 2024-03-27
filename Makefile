@@ -6,7 +6,7 @@
 #    By: laroges <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/24 01:52:45 by laroges           #+#    #+#              #
-#    Updated: 2024/03/15 15:18:26 by laroges          ###   ########.fr        #
+#    Updated: 2024/03/27 02:28:52 by laroges          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,6 +14,8 @@ SRC =	main.c \
 	init.c \
 	minishell.c \
 	path.c \
+	pipe.c \
+	process.c \
 	builtin.c \
 	ft_pwd.c \
 	execute.c \

@@ -6,7 +6,7 @@
 /*   By: laroges <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/08 13:19:44 by laroges           #+#    #+#             */
-/*   Updated: 2024/03/15 18:25:28 by laroges          ###   ########.fr       */
+/*   Updated: 2024/03/27 04:31:27 by laroges          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,8 @@ Simple Shell : https://www.youtube.com/watch?v=_Eioyt7C67M
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include <sys/wait.h>
 #include <unistd.h>
 #include <readline/readline.h>
@@ -99,6 +101,7 @@ typedef enum	e_bool
 
 typedef struct	s_data
 {
+	int		i;
 	char	**paths;
 }		t_data;
 
@@ -132,8 +135,31 @@ typedef struct	s_cmd
 //	static	t_simple_cmd *current_simple_cmd;
 }		t_cmd;
 
+typedef struct	s_pipe
+{
+	char	*infile;
+	char	*infile_cmd;
+	char	*outfile;
+	char	*outfile_cmd;
+}		t_pipe;
+
 t_data	*init_data(t_data *d, char **envp);
 
+//__________________________________________________________________________________________________________________________________________
+// Utils
+
+// process.c
+void	child_process(t_data *d, char *cmd, int *end);
+void	parent_process(t_data *d, char *cmd, int *end);
+
+// pipe.c
+int	nb_pipe(char *input);
+int	*init_pipe(int end[2]);
+int	is_pipe(char c);
+void	exec_pipe(t_data *d, char *input);
+
+
+//__________________________________________________________________________________________________________________________________________
 // Prompt and history
 void	prompt(t_data *d, int argc, char **argv, char **envp); // Each command must be executed in a child process. Then the prompt is displayed again.
 
@@ -160,6 +186,7 @@ char	**get_paths(char **envp);
 		// !!! Entrer toutes les lignes de commandes dans une table.
 	// The grammar rules used by the parser are described in a file called shell.y.
 	// shell.y is processed by a program called YACC that generates a parser program.
+
 
 //__________________________________________________________________________________________________________________________________________
 // Expander
@@ -195,6 +222,7 @@ void	exec_builtin(char **args);
 int	ft_pwd(void);
 
 // execute.c
+char	*set_command(char **input, int i);
 void	exec_command(t_data *d, char *input);
 char	*find_the_right_path(t_data*d, char *input);
 //__________________________________________________________________________________________________________________________________________
@@ -207,6 +235,7 @@ int	is_metacharacter(char *c); // To handle : < << > >> | $
 void	free_str(char *str);
 void	free_double_str(char **str);
 void	free_data(t_data *d);
+void	exit_error(const char *error);
 
 /*
  ******************************************		SYNTAXE SHELL			****************************************************
