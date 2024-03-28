@@ -1,22 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init.c                                             :+:      :+:    :+:   */
+/*   ft_calloc.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: laroges <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/15 15:08:25 by laroges           #+#    #+#             */
-/*   Updated: 2024/03/15 17:53:27 by laroges          ###   ########.fr       */
+/*   Created: 2023/05/03 12:13:23 by laroges           #+#    #+#             */
+/*   Updated: 2023/05/20 11:53:04 by laroges          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_data	*init_data(t_data *d, char **envp)
+void	*ft_calloc(size_t nmemb, size_t size)
 {
-	d = malloc(sizeof(t_data));
-	if (!d)
-		exit_error("malloc t_data");
-	d->paths = get_paths(envp);
-	return (d);
+	void		*ptr;
+
+	ptr = NULL;
+	if (nmemb != 0 && size != 0 && ((nmemb * size) / size) != nmemb)
+		return (NULL);
+	ptr = (void *)malloc(nmemb * size);
+	if (ptr == NULL)
+		return (NULL);
+	ft_memset((unsigned char *)ptr, 0, nmemb * size);
+	return (ptr);
 }

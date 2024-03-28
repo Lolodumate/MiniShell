@@ -19,11 +19,11 @@
  * - On recommence le processus autant de fois que necessaire (cf. nb_pipe).
  */
 
-int	is_pipe(char c)
+bool	is_pipe(char c)
 {
 	if (c == '|')
-		return (TRUE);
-	return (FALSE);
+		return (true);
+	return (false);
 }
 
 // Comptage du nombre de pipes entres dans la chaine de caracteres input

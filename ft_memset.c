@@ -1,22 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init.c                                             :+:      :+:    :+:   */
+/*   ft_memset.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: laroges <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/15 15:08:25 by laroges           #+#    #+#             */
-/*   Updated: 2024/03/15 17:53:27 by laroges          ###   ########.fr       */
+/*   Created: 2023/05/02 13:17:37 by laroges           #+#    #+#             */
+/*   Updated: 2023/05/08 09:45:37 by laroges          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_data	*init_data(t_data *d, char **envp)
+void	*ft_memset(void *s, int c, size_t n)
 {
-	d = malloc(sizeof(t_data));
-	if (!d)
-		exit_error("malloc t_data");
-	d->paths = get_paths(envp);
-	return (d);
+	while (n > 0)
+	{
+		*((unsigned char *)s + n - 1) = (unsigned char)c;
+		n--;
+	}
+	return (s);
 }

@@ -3,175 +3,96 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: laroges <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: abdmessa <abdmessa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/08 13:19:44 by laroges           #+#    #+#             */
-/*   Updated: 2024/03/27 04:31:27 by laroges          ###   ########.fr       */
+/*   Created: 2024/03/20 18:56:06 by abdmessa          #+#    #+#             */
+/*   Updated: 2024/03/26 11:16:00 by abdmessa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
-/*
-• Display a prompt when waiting for a new command.
-• Have a working history.
-• Search and launch the right executable (based on the PATH variable or using a
-relative or an absolute path).
-• Avoid using more than one global variable to indicate a received signal. Consider
-the implications: this approach ensures that your signal handler will not access your
-main data structures.
-• Not interpret unclosed quotes or special characters which are not required by the
-subject such as \ (backslash) or ; (semicolon).
-• Handle ’ (single quote) which should prevent the shell from interpreting the meta-
-characters in the quoted sequence.
-• Handle "" (double quote) which should prevent the shell from interpreting the meta-
-characters in the quoted sequence except for $ (dollar sign).
-• Implement redirections:
-◦ < should redirect input.
-◦ > should redirect output.
-◦ << should be given a delimiter, then read the input until a line containing the
-delimiter is seen. However, it doesn’t have to update the history!
-◦ >> should redirect output in append mode.
-• Implement pipes (| character). The output of each command in the pipeline is
-connected to the input of the next command via a pipe.
-• Handle environment variables ($ followed by a sequence of characters) which
-should expand to their values.
-• Handle $? which should expand to the exit status of the most recently executed
-foreground pipeline.
-• Handle ctrl-C, ctrl-D and ctrl-\ which should behave like in bash.
-• In interactive mode:
-◦ ctrl-C displays a new prompt on a new line.
-◦ ctrl-D exits the shell.
-◦ ctrl-\ does nothing.
-• Your shell must implement the following builtins:
-◦ echo with option -n
-◦ cd with only a relative or absolute path
-◦ pwd with no options
-◦ export with no options
-◦ unset with no options
-◦ env with no options or arguments
-◦ exit with no options
-
-1. Display the prompt
-2. Reading user input
-3. Parsing the command
-4. Searching for the command
-5. Creating a child process
-6. Executing the command
-7. Wait for command completion
-8. Displaying output
-9. Returning to the prompt
-10. Exiting the Shell
-
-
-Ressources :
-
-https://m4nnb3ll.medium.com/minishell-building-a-mini-bash-a-42-project-b55a10598218
-https://achrafbelarif.medium.com/42cursus-minishell-29cd25f972e6
-https://www.youtube.com/watch?v=ubt-UjcQUYg
-Simple Shell : https://www.youtube.com/watch?v=_Eioyt7C67M
-
-*/
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-#include "libft.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <sys/wait.h>
-#include <unistd.h>
-#include <readline/readline.h>
-#include <readline/history.h>
+# ifndef READLINE_PROMPT
+#  define READLINE_PROMPT "\033[92m minishell-1.42$ \033[0m"
+# endif
 
-typedef enum	e_bool
-{
-	FALSE,
-	TRUE,
-	LESS,
-	LESSLESS,
-	GREAT,
-	GREATGREAT,
-	PIPE,
-	DOLLAR,
-	AMPERSAND,
-	NOTOKEN
-}		t_bool;
+# include <readline/history.h>
+# include <readline/readline.h>
+# include <stdbool.h>
+# include <stdio.h>
+# include <stdlib.h>
+# include <unistd.h>
+# include <sys/types.h>
+# include <sys/stat.h>
+# include <fcntl.h>
+# include <sys/wait.h>
 
-typedef struct	s_data
+// General struct with parsing of 'PATHS=' (env)
+typedef struct s_data
 {
-	int		i;
 	char	**paths;
 }		t_data;
 
-// Describes a simple command and arguments
-typedef struct	s_simple_cmd
+typedef struct s_env
 {
-	int	nb_of_available_arg; // Available space for arguments currently preallocated
-	int	nb_arg; // Number of arguments
-	char	**args; // Array of arguments
-//	s_simple_cmd(); // ?
-//	void	insert_arg(char *arg); // ?
-}		t_simple_cmd;
+	char			*key;
+	char			*value;
+	struct s_env	*next;
+}					t_env;
 
-// Describes a complete command with the multiple pipes if any. And input/output redirection if any.
-typedef struct	s_cmd
+typedef struct s_tok
 {
-	int	nb_of_available_simple_cmd;
-	int	nb_of_simple_cmd;
-//	t_simple_cmd **simple_cmd;
-	char	*outfile;
-	char	*infile;
-	char	*errfile;
-	int	background;
-//	void	prompt();
-//	void	print();
-//	void	execute();
-//	void	clear();
-//	s_cmd(); // ?
-//	void	insert_simple_cmd(t_simple_cmd *simple_cmd);
-//	static struct	s_cmd	*current_cmd;
-//	static	t_simple_cmd *current_simple_cmd;
-}		t_cmd;
+	char			*str;
+	int				type;
+	struct s_tok	*next;
+}					t_tok;
 
-typedef struct	s_pipe
+enum				e_token
 {
-	char	*infile;
-	char	*infile_cmd;
-	char	*outfile;
-	char	*outfile_cmd;
-}		t_pipe;
+	DSUP,
+	DINF,
+	INF,
+	SUP,
+	PIPE,
+	WORD
+};
+typedef struct s_list
+{
+	int				content;
+	int				pos;
+	struct s_list	*next;
+}					t_list;
 
+int					parsing(char *input);
+int					check_quotes(char *input);
+int					syntax_first_pipe(char *input);
+int					syntax_last_input(char *input);
+int					syntax(char *input);
+int					chevron(char *input);
+int					chevron_space(char *input);
+void				print_no_quotes(char *input);
+void				ignore_quotes(char *input, int *i);
+t_env				*grab_env(char **str);
+char				*ret_value(t_env *env, t_tok *lst);
+t_tok				*ft_lstnew_tok(char *str, int type);
+void				ft_lstadd_back_tok(t_tok **lst, t_tok *new);
+t_tok				*is_token(char *input, t_tok *token);
+size_t				ft_strlen(const char *s);
+char				*ft_strchr(const char *s, int c);
+void				print_tab_tok(t_tok *tok);
+bool				check(t_tok *token);
+bool				etat_0(t_tok *token);
+bool				etat_1(t_tok *token);
+bool				etat_2(t_tok *token);
+bool				etat_3(t_tok *token);
+
+// init.c
 t_data	*init_data(t_data *d, char **envp);
 
-//__________________________________________________________________________________________________________________________________________
-// Utils
-
-// process.c
-void	child_process(t_data *d, char *cmd, int *end);
-void	parent_process(t_data *d, char *cmd, int *end);
-
-// pipe.c
-int	nb_pipe(char *input);
-int	*init_pipe(int end[2]);
-int	is_pipe(char c);
-void	exec_pipe(t_data *d, char *input);
-
-
-//__________________________________________________________________________________________________________________________________________
-// Prompt and history
-void	prompt(t_data *d, int argc, char **argv, char **envp); // Each command must be executed in a child process. Then the prompt is displayed again.
-
-//__________________________________________________________________________________________________________________________________________
-// Lexer
-	// A Lexer takes the input characters and put them together into words called tokens, and a parser that processes the tokens according to a grammar and build the command table.	
-	// The tokens are described in a file shell.l.
-	// The file shell.l is processed with a program called LEX that generates the lexical analyzer.
-
-// tokens.c
-int	is_blank(char c);
-char	**tokenize(char **argv);
+// execute.c
+void				exec_command(t_data *d, char *input); // command exec function
+char				*find_the_right_path(t_data *d, char *input);
 
 // path.c
 int	find_path(char **envp, char *to_find);
@@ -179,103 +100,29 @@ char	*add_backslash(char *path);
 char	**check_backslash(char **paths);
 char	**get_paths(char **envp);
 
+// pipe.c
+bool	is_pipe(char c);
+int	nb_pipe(char *input);
+int	*init_pipe(int end[2]);
+void	exec_pipe(t_data *d, char *input);
 
-//__________________________________________________________________________________________________________________________________________
-// Parser
-	// The parser reads the command line and puts it into a data structure called COMMAND TABLE that will store the commands that will be executed.
-		// !!! Entrer toutes les lignes de commandes dans une table.
-	// The grammar rules used by the parser are described in a file called shell.y.
-	// shell.y is processed by a program called YACC that generates a parser program.
+// process.c
+void	child_process(t_data *d, char *cmd, int *end);
+void	parent_process(t_data *d, char *cmd, int *end);
 
-
-//__________________________________________________________________________________________________________________________________________
-// Expander
-
-//__________________________________________________________________________________________________________________________________________
-// Grammar
-	// Need to implement GRAMMAR in shell.l and shell.y to make the parser interpret the command lines and provide the executor with the correct information.
-	// GRAMMAR :
-	// cmd[arg]* [|cmd[arg]*]*
-	// 	[[>filename][<filename][>&filename][>>filename][>>&filename]]*[&]
-	// cmd is the command followed by 0 or more arguments (arg).
-	// this command and its argument can be followed by another subcommand (also followed by 0 or more arguments) represented with a pipe.
-	// [>filename] means that there might be 0 or 1 >filename redirections.
-	// The [&] at the end means that the & character is optionnal.
-		// !!! The parser takes the tokens and check if they follow the syntax described by the grammar rules in shell.y.
-//__________________________________________________________________________________________________________________________________________
-// Command table
-	//
-
-
-//__________________________________________________________________________________________________________________________________________
-// Executor
-	// 1. Take the COMMAND TABLE.
-	// 2. Create a new process for each SIMPLE COMMAND in the array.
-	// 3. If necessary, create pipes to communicate the ouput of a process to the input of the next one. And it will redirect the standard input, standard output and standard error when there are any redirections.
-	// Creating new processes : start by CREATING A NEW PROCESS FOR EACH COMMAND in the pipeline and making the parent wait for the last command. This will allowe running simple commands such as "ls -al".
-
-// builtin.c
-int	is_builtin(char *cmd);
-void	exec_builtin(char **args);
-
-// ft_pwd.c
-int	ft_pwd(void);
-
-// execute.c
-char	*set_command(char **input, int i);
-void	exec_command(t_data *d, char *input);
-char	*find_the_right_path(t_data*d, char *input);
-//__________________________________________________________________________________________________________________________________________
-// Handle characters
-int	is_metacharacter(char *c); // To handle : < << > >> | $ 
-
-//__________________________________________________________________________________________________________________________________________
-
-// Clean memory
+// free.c
 void	free_str(char *str);
 void	free_double_str(char **str);
 void	free_data(t_data *d);
 void	exit_error(const char *error);
 
-/*
- ******************************************		SYNTAXE SHELL			****************************************************
-
-	* Shell command language : https://pubs.opengroup.org/onlinepubs/009695399/utilities/xcu_chap02.html
-    The shell reads its input from a file (see sh), from the -c option or from the system() and popen() functions defined in the System Interfaces volume of IEEE Std 1003.1-2001. If the first line of a file of shell commands starts with the characters "#!", the results are unspecified.
-
-    The shell breaks the input into tokens: words and operators; see Token Recognition.
-	* Token recognition : https://pubs.opengroup.org/onlinepubs/009695399/utilities/xcu_chap02.html#tag_02_03
-
-    The shell parses the input into simple commands (see Simple Commands) and compound commands (see Compound Commands).
-	* Simple commands : https://pubs.opengroup.org/onlinepubs/009695399/utilities/xcu_chap02.html#tag_02_09_01	
-	* Compound commands : https://pubs.opengroup.org/onlinepubs/009695399/utilities/xcu_chap02.html#tag_02_09_04
-
-    The shell performs various expansions (separately) on different parts of each command, resulting in a list of pathnames and fields to be treated as a command and arguments; see Word Expansions.
-	* Word expansions : https://pubs.opengroup.org/onlinepubs/009695399/utilities/xcu_chap02.html#tag_02_06
-
-    The shell performs redirection (see Redirection) and removes redirection operators and their operands from the parameter list.
-	* Redirections : https://pubs.opengroup.org/onlinepubs/009695399/utilities/xcu_chap02.html#tag_02_07
-
-    The shell executes a function (see Function Definition Command), built-in (see Special Built-In Utilities), executable file, or script, giving the names of the arguments as positional parameters numbered 1 to n, and the name of the command (or in the case of a function within a script, the name of the script) as the positional parameter numbered 0 (see Command Search and Execution).
-
-	* Function definition command : https://pubs.opengroup.org/onlinepubs/009695399/utilities/xcu_chap02.html#tag_02_09_05
-	* Special built-in utilitiues : https://pubs.opengroup.org/onlinepubs/009695399/utilities/xcu_chap02.html#tag_02_14
-
-    The shell optionally waits for the command to complete and collects the exit status (see Exit Status for Commands).
-	* Exit status : https://pubs.opengroup.org/onlinepubs/009695399/utilities/xcu_chap02.html#tag_02_08_02
-
-*/
-
-//__________________________________________________________________________________________________________________________________________
-// Pipes
-
-// Handle environment variables
-
-// Handle $?
-
-// Handle 'Ctrl+' functionnalities (signals)
-
-// Builtin
-
+// ************ libft functions **************************
+char	*ft_strjoin(char const *s1, char const *s2);
+char	**ft_split(char const *s, char c);
+char	*ft_substr(char const *s, unsigned int start, size_t len);
+int	ft_strncmp(const char *s1, const char *s2, size_t n);
+void	*ft_calloc(size_t nmemb, size_t size);
+size_t	ft_strlcpy(char *dst, const char *src, size_t size);
+void	*ft_memset(void *s, int c, size_t n);
 
 #endif

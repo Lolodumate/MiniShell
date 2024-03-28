@@ -1,22 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init.c                                             :+:      :+:    :+:   */
+/*   ft_strlcpy.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: laroges <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/15 15:08:25 by laroges           #+#    #+#             */
-/*   Updated: 2024/03/15 17:53:27 by laroges          ###   ########.fr       */
+/*   Created: 2023/05/02 15:05:34 by laroges           #+#    #+#             */
+/*   Updated: 2023/05/05 15:32:18 by laroges          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_data	*init_data(t_data *d, char **envp)
+size_t	ft_strlcpy(char *dst, const char *src, size_t size)
 {
-	d = malloc(sizeof(t_data));
-	if (!d)
-		exit_error("malloc t_data");
-	d->paths = get_paths(envp);
-	return (d);
+	size_t	len;
+	size_t	i;
+
+	len = ft_strlen(src);
+	i = 0;
+	if (src == NULL)
+		return (0);
+	if (size > 0)
+	{
+		while (i < (size - 1) && src[i])
+		{
+			dst[i] = src[i];
+			i++;
+		}
+		dst[i] = '\0';
+	}
+	return (len);
 }
