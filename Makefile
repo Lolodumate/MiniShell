@@ -6,30 +6,28 @@ SRCS = 	code.c \
 		expand.c\
 		token.c\
 		utils_token.c\
+		path.c\
+		libft/ft_calloc.c\
+		libft/ft_memset.c\
+		libft/ft_split.c\
+		libft/ft_strjoin.c\
+		libft/ft_strlcpy.c\
+		libft/ft_strncmp.c\
+		libft/ft_substr.c\
+		libft/ft_strchr.c\
+		libft/ft_strdup.c\
 		execute.c \
-		path.c \
-		pipe.c \
-		process.c \
 		free.c \
-		ft_split.c \
-		ft_strjoin.c \
-		ft_substr.c \
-		ft_strncmp.c  \
-		ft_calloc.c \
-		ft_strlcpy.c \
-		ft_memset.c \
 
-##############   Directories creation  ##############
 
 SRCS_DIR = src/
 OBJS_DIR = obj/
 
-
 OBJS = $(SRCS:.c=.o)
 
-NAME = minishell
+NAME = Minishell
 CC = cc
-CFLAGS = -Wall -Werror -Wextra -g3
+CFLAGS = -Wall -Werror -Wextra -g3 -I.
 RM = rm -f
 
 all: $(NAME)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: laroges <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: abdmessa <abdmessa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 15:48:36 by laroges           #+#    #+#             */
-/*   Updated: 2024/03/28 16:26:14 by laroges          ###   ########.fr       */
+/*   Updated: 2024/03/28 16:47:01 by laroges          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 
 void	exec_command(char *input, char **paths)
 {
-	pid_t		pid;
+	pid_t	pid;
 	int		status;
-	char    **cmd;
+	char	**cmd;
 	char	*try_path;
 
 	cmd = ft_split(input, ' ');
@@ -48,7 +48,6 @@ void	exec_command(char *input, char **paths)
 		}
 		if (WIFEXITED(status))
 			WTERMSIG(status);
-
 	}
 	free_str(try_path);
 	free_double_str(cmd);

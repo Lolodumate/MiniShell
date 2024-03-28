@@ -6,7 +6,7 @@
 /*   By: abdmessa <abdmessa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 22:43:36 by abdmessa          #+#    #+#             */
-/*   Updated: 2024/03/25 08:30:11 by abdmessa         ###   ########.fr       */
+/*   Updated: 2024/03/27 00:16:09 by abdmessa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,7 +120,6 @@ int	syntax(char *input)
 	{
 		if (chevron(input) == 0 || chevron_space(input) == 0)
 			return (0);
-		ignore_quotes(input, &i);
 		if (input[i] == '|')
 		{
 			while (input[i + 1] == 32 || input[i + 1] == '\t')

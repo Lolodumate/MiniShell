@@ -6,13 +6,15 @@
 /*   By: abdmessa <abdmessa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 17:45:29 by abdmessa          #+#    #+#             */
-/*   Updated: 2024/03/26 10:18:22 by abdmessa         ###   ########.fr       */
+/*   Updated: 2024/03/28 05:44:29 by abdmessa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-bool	etat_0(t_tok *token)
+//	post-tokenisation etat initial commencement 
+//uniquement par redirection ou word
+bool	etat_init(t_tok *token)
 {
 	if (!token)
 		return (true);
@@ -25,6 +27,7 @@ bool	etat_0(t_tok *token)
 		return (false);
 }
 
+//	etat du word et ses debouchees
 bool	etat_1(t_tok *token)
 {
 	if (!token)
@@ -40,6 +43,7 @@ bool	etat_1(t_tok *token)
 		return (false);
 }
 
+//	etat des redirections et ses debouchees
 bool	etat_2(t_tok *token)
 {
 	if (!token)
@@ -53,6 +57,7 @@ bool	etat_2(t_tok *token)
 		return (false);
 }
 
+//	etat des pipe et ses debouchees
 bool	etat_3(t_tok *token)
 {
 	if (!token)
@@ -66,9 +71,10 @@ bool	etat_3(t_tok *token)
 		return (false);
 }
 
+// exec du parsing de l etat initial
 bool	check(t_tok *token)
 {
-	if (etat_0(token) == false)
+	if (etat_init(token) == false)
 		return (write(2, "\033[91m >> Minishell: Syntaxe error\n", 35), false);
-	return (etat_0(token));
+	return (etat_init(token));
 }

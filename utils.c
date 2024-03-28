@@ -6,7 +6,7 @@
 /*   By: abdmessa <abdmessa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 07:55:34 by abdmessa          #+#    #+#             */
-/*   Updated: 2024/03/26 03:49:27 by abdmessa         ###   ########.fr       */
+/*   Updated: 2024/03/28 05:52:13 by abdmessa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,10 @@ t_env	*ft_lstnew(char *key, char *value)
 {
 	t_env	*new;
 
-	new = malloc(sizeof(t_env));
+	new = ft_calloc(sizeof(t_env), 1);
 	if (!new)
 	{
-		perror("Malloc failed");
+		perror("ft_calloc failed");
 		return (NULL);
 	}
 	new->key = strdup(key);
@@ -51,25 +51,6 @@ size_t	ft_strlen(const char *s)
 	while (s[i])
 		i++;
 	return (i);
-}
-
-char	*ft_strchr(const char *s, int c)
-{
-	char	*s1;
-	int		i;
-
-	s1 = (char *)s;
-	i = ft_strlen(s);
-	if (c == '\0')
-		return (&s1[i]);
-	i = 0;
-	while (s1[i])
-	{
-		if (s1[i] == (char)c)
-			return (&s1[i]);
-		i++;
-	}
-	return (0);
 }
 
 t_env	*grab_env(char **str)

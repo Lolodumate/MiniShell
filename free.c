@@ -3,14 +3,26 @@
 /*                                                        :::      ::::::::   */
 /*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: laroges <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: abdmessa <abdmessa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 15:52:15 by laroges           #+#    #+#             */
-/*   Updated: 2024/03/28 16:13:22 by laroges          ###   ########.fr       */
+/*   Updated: 2024/03/28 16:47:20 by laroges          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void	free_list(t_tok *lst)
+{
+	t_tok	*tmp;
+
+	while (lst)
+	{
+		tmp = lst;
+		lst = lst->next;
+		free(tmp);
+	}
+}
 
 void	free_str(char *str)
 {
@@ -22,7 +34,7 @@ void	free_str(char *str)
 
 void	free_double_str(char **str)
 {
-	int             i;
+	int	i;
 
 	i = 0;
 	while (str[i])
@@ -33,10 +45,4 @@ void	free_double_str(char **str)
 	}
 	free(str);
 	str = NULL;
-}
-
-void	exit_error(const char *error)
-{
-	perror(error);
-	exit(EXIT_FAILURE);
 }

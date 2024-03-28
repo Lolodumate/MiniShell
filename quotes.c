@@ -6,7 +6,7 @@
 /*   By: abdmessa <abdmessa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 18:53:45 by abdmessa          #+#    #+#             */
-/*   Updated: 2024/03/26 10:59:50 by abdmessa         ###   ########.fr       */
+/*   Updated: 2024/03/28 05:51:50 by abdmessa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,20 +40,33 @@ int	check_quotes(char *input)
 	return (1);
 }
 
-void	ignore_quotes(char *input, int *i)
+char	*ret_no_quotes(char *input, int *i)
 {
+	char	*str;
+	int		j;
+
+	str = NULL;
+	j = 0;
 	if (input[*i] == '"')
 	{
 		(*i)++;
-		while (input[*i] && input[*i] != '"')
-			(*i)++;
+		while (input[*i] && input[*i] != '"' && !ft_strchr("|>< \t", input[*i]))
+		{
+			str[j++] = input[*i++];
+		}
+		str[j] = '\0';
 	}
 	else if (input[*i] == '\'')
 	{
 		(*i)++;
-		while (input[*i] && input[*i] != '\'')
-			(*i)++;
+		while (input[*i] && input[*i] != '\'' && !ft_strchr("|>< \t",
+				input[*i]))
+		{
+			str[j++] = input[*i++];
+		}
+		str[j] = '\0';
 	}
+	return (str);
 }
 
 void	print_no_quotes(char *input)
@@ -63,7 +76,13 @@ void	print_no_quotes(char *input)
 	i = 0;
 	while (input[i])
 	{
-		if (input[i] == '\'')
+		if (input[i] == '"')
+		{
+			i++;
+			while (input[i] && input[i] != '\'')
+				printf("%c", input[i++]);
+		}
+		else if (input[i] == '\'')
 		{
 			i++;
 			while (input[i] && input[i] != '\'')
@@ -71,7 +90,6 @@ void	print_no_quotes(char *input)
 		}
 		i++;
 	}
-	printf("\n");
 }
 
 int	parsing(char *input)

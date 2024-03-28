@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   path.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: laroges <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: abdmessa <abdmessa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 14:50:19 by laroges           #+#    #+#             */
-/*   Updated: 2024/03/15 14:51:04 by laroges          ###   ########.fr       */
+/*   Updated: 2024/03/28 00:17:28 by abdmessa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,4 +82,3 @@ char	**get_paths(char **envp)
 	paths = check_backslash(paths);
 	return (paths);
 }
-
