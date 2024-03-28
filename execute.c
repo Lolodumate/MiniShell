@@ -6,11 +6,12 @@
 /*   By: abdmessa <abdmessa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 15:48:36 by laroges           #+#    #+#             */
-/*   Updated: 2024/03/28 16:47:01 by laroges          ###   ########.fr       */
+/*   Updated: 2024/03/28 17:06:58 by laroges          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include "exec.h"
 
 void	exec_command(char *input, char **paths)
 {

@@ -7,6 +7,8 @@ SRCS = 	code.c \
 		token.c\
 		utils_token.c\
 		path.c\
+		pipe.c \
+		process.c \
 		libft/ft_calloc.c\
 		libft/ft_memset.c\
 		libft/ft_split.c\
@@ -18,6 +20,7 @@ SRCS = 	code.c \
 		libft/ft_strdup.c\
 		execute.c \
 		free.c \
+		error.c \
 
 
 SRCS_DIR = src/

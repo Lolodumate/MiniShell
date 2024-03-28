@@ -6,11 +6,12 @@
 /*   By: laroges <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 23:48:13 by laroges           #+#    #+#             */
-/*   Updated: 2024/03/28 16:17:28 by laroges          ###   ########.fr       */
+/*   Updated: 2024/03/28 17:07:41 by laroges          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include "exec.h"
 
 /* Multipipes :
  * - Compter le nombre de pipes (int nb_pipe) dans l'input.

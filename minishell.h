@@ -6,7 +6,7 @@
 /*   By: abdmessa <abdmessa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 18:56:06 by abdmessa          #+#    #+#             */
-/*   Updated: 2024/03/28 16:47:33 by laroges          ###   ########.fr       */
+/*   Updated: 2024/03/28 17:05:57 by laroges          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,20 +92,13 @@ int					check_quotes(char *input);
 
 void				update_token_values(t_env *env, t_tok *lst);
 
-// execute.c
-void				exec_command(char *input, char **paths);
-char				*find_the_right_path(char *input, char **paths);
-
-// path.c
-int					find_path(char **envp, char *to_find);
-char				*add_backslash(char *path);
-char				**check_backslash(char **paths);
-char				**get_paths(char **envp);
-
 // free.c
 void				free_str(char *str);
 void				free_double_str(char **str);
 void				free_list(t_tok *lst);
+
+// error.c
+void				exit_error(const char *error);
 
 // ************ libft functions **************************
 

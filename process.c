@@ -6,11 +6,12 @@
 /*   By: laroges <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 00:56:58 by laroges           #+#    #+#             */
-/*   Updated: 2024/03/28 16:14:30 by laroges          ###   ########.fr       */
+/*   Updated: 2024/03/28 17:09:24 by laroges          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include "exec.h"
 
 // cmd correspond a la commande a executer (premier token WORD qui suit immediatement le token PIPE)
 // ATTENTION : cmd peut inclure un nombre variable d'options (par ex. : ls -l -a)
