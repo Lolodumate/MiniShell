@@ -6,7 +6,7 @@
 /*   By: laroges <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 00:56:58 by laroges           #+#    #+#             */
-/*   Updated: 2024/03/27 02:40:43 by laroges          ###   ########.fr       */
+/*   Updated: 2024/03/28 16:14:30 by laroges          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 // cmd correspond a la commande a executer (premier token WORD qui suit immediatement le token PIPE)
 // ATTENTION : cmd peut inclure un nombre variable d'options (par ex. : ls -l -a)
-void	child_process(t_data *d, char *cmd, int *end)
+void	child_process(char *cmd, int *end, char **envp)
 {
 	int		fd;
 
@@ -28,10 +28,10 @@ void	child_process(t_data *d, char *cmd, int *end)
 	close(end[1]);
 	close(end[0]);
 	close(fd);
-	exec_command(d, cmd);
+	exec_command(cmd, envp);
 }
 
-void	parent_process(t_data *d, char *cmd, int *end)
+void	parent_process(char *cmd, int *end, char **envp)
 {
 	int		fd;
 
@@ -45,5 +45,5 @@ void	parent_process(t_data *d, char *cmd, int *end)
 	close(end[1]);
 	close(end[0]);
 	close(fd);
-	exec_command(d, cmd);
+	exec_command(cmd, envp);
 }

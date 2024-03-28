@@ -8,7 +8,6 @@ SRCS = 	code.c \
 		utils_token.c\
 		execute.c \
 		path.c \
-		init.c \
 		pipe.c \
 		process.c \
 		free.c \

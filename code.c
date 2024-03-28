@@ -6,7 +6,7 @@
 /*   By: abdmessa <abdmessa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 17:20:17 by abdmessa          #+#    #+#             */
-/*   Updated: 2024/03/26 11:15:46 by abdmessa         ###   ########.fr       */
+/*   Updated: 2024/03/28 16:26:54 by laroges          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,22 +41,12 @@ void	print_tab_tok(t_tok *tok)
 int	main(int ac, char **av, char **envp)
 {
 	char	*input;
+	char	**paths;
 	t_env	*env;
 	t_tok	*lst;
-	t_data	*d; // General structure
 
 	(void)av;
-	d = NULL;
-	d = init_data(d, envp);
-//****************************************************	
-	int		i = 0;
-	while (d->paths[i])
-	{
-		printf("d->paths[%d] = %s\n", i, d->paths[i]);
-		i++;
-	}
-//****************************************************	
-	
+	paths = get_paths(envp);
 	if (ac == 1)
 	{
 		env = grab_env(envp);
@@ -70,7 +60,7 @@ int	main(int ac, char **av, char **envp)
 			if (input)
 				add_history(input);
 			lst = is_token(input, lst);
-			exec_command(d, input); // command exec function
+			exec_command(input, paths); // command exec function
 			if (check(lst) == true && parsing(input) == 1)
 			{
 				ret_value(env, lst);
@@ -80,6 +70,5 @@ int	main(int ac, char **av, char **envp)
 			}
 		}
 		free(env);
-		free(d);
 	}
 }

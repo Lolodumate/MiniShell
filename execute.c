@@ -6,13 +6,13 @@
 /*   By: laroges <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 15:48:36 by laroges           #+#    #+#             */
-/*   Updated: 2024/03/15 19:41:37 by laroges          ###   ########.fr       */
+/*   Updated: 2024/03/28 16:26:14 by laroges          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	exec_command(t_data *d, char *input)
+void	exec_command(char *input, char **paths)
 {
 	pid_t		pid;
 	int		status;
@@ -21,7 +21,7 @@ void	exec_command(t_data *d, char *input)
 
 	cmd = ft_split(input, ' ');
 	try_path = NULL;
-	try_path = find_the_right_path(d, input);
+	try_path = find_the_right_path(input, paths);
 	if (try_path == NULL)
 	{
 		perror("command not found");
@@ -54,7 +54,7 @@ void	exec_command(t_data *d, char *input)
 	free_double_str(cmd);
 }
 
-char	*find_the_right_path(t_data *d, char *input)
+char	*find_the_right_path(char *input, char **paths)
 {
 	int		i;
 	char	**cmd;
@@ -63,9 +63,9 @@ char	*find_the_right_path(t_data *d, char *input)
 	i = 0;
 	cmd = ft_split(input, ' ');
 	try_path = NULL;
-	while (d->paths[i])
+	while (paths[i])
 	{
-		try_path = ft_strjoin(d->paths[i], cmd[0]);
+		try_path = ft_strjoin(paths[i], cmd[0]);
 		if (access(try_path, F_OK) == 0)
 			break ;
 		free(try_path);

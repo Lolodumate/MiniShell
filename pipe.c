@@ -6,7 +6,7 @@
 /*   By: laroges <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 23:48:13 by laroges           #+#    #+#             */
-/*   Updated: 2024/03/27 04:55:18 by laroges          ###   ########.fr       */
+/*   Updated: 2024/03/28 16:17:28 by laroges          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ int	*init_pipe(int end[2])
 	return (end);
 }
 
-void	exec_pipe(t_data *d, char *input)
+void	exec_pipe(char *input, char **envp)
 {
 	int		i;
 	int		status;
@@ -72,9 +72,9 @@ void	exec_pipe(t_data *d, char *input)
 		exit_error("create process");
 	}
 	if (pid == 0)
-		child_process(d, cut_input[0], end);
+		child_process(cut_input[0], end, envp);
 	else
-		parent_process(d, cut_input[2], end);
+		parent_process(cut_input[2], end, envp);
 	while (i < 2)
 	{
 		waitpid(-1, &status, 0);

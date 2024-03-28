@@ -6,7 +6,7 @@
 /*   By: laroges <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 15:52:15 by laroges           #+#    #+#             */
-/*   Updated: 2024/03/27 02:55:03 by laroges          ###   ########.fr       */
+/*   Updated: 2024/03/28 16:13:22 by laroges          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,15 +33,6 @@ void	free_double_str(char **str)
 	}
 	free(str);
 	str = NULL;
-}
-
-void	free_data(t_data *d)
-{
-	if (!d)
-		return ;
-	if (d->paths)
-		free(d->paths);
-	free(d);
 }
 
 void	exit_error(const char *error)
