@@ -46,3 +46,15 @@ void	free_double_str(char **str)
 	free(str);
 	str = NULL;
 }
+
+void	free_end(int **end, int n)
+{
+	int             i;
+
+	i = -1;
+	if (!end)
+		return ;
+	while (++i < n)
+		free(end[i]);
+	free(end);
+}

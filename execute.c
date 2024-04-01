@@ -15,40 +15,16 @@
 
 void	exec_command(char *input, char **paths)
 {
-	pid_t	pid;
-	int		status;
-	char	**cmd;
 	char	*try_path;
-
+	char	**cmd;
+	
 	cmd = ft_split(input, ' ');
-	try_path = NULL;
 	try_path = find_the_right_path(input, paths);
-	if (try_path == NULL)
+	if (execve(try_path, cmd, NULL) == -1)
 	{
+		free_str(try_path);
 		perror("command not found");
-		return ;
-	}
-	pid = fork();
-	if (pid == -1)
 		exit(EXIT_FAILURE);
-	if (pid == 0)
-	{
-		if (execve(try_path, cmd, NULL) == -1)
-		{
-			free_str(try_path);
-			perror("command not found");
-			exit(EXIT_FAILURE);
-		}
-	}
-	else
-	{
-		if (wait(&status) == -1)
-		{
-			perror("wait");
-			exit(EXIT_FAILURE);
-		}
-		if (WIFEXITED(status))
-			WTERMSIG(status);
 	}
 	free_str(try_path);
 	free_double_str(cmd);

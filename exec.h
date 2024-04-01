@@ -32,15 +32,19 @@
 void				exec_command(char *input, char **paths);
 char				*find_the_right_path(char *input, char **paths);
 
+// utils_exec.c
+bool	redir(char *cmd); // Fonction qui determine si une commande contient une redirection
+
 // process.c
-void	child_process(char *cmd, int *end, char **envp);
-void	parent_process(char *cmd, int *end, char **envp);
+int	close_pipe(int **end, int i, int j);
+void	child_process(char *cmd, int **end, int i, char **envp);
+void	parent_process(int **end, int i, int nb_pipe);
 
 // pipe.c
 bool	is_pipe(char c);
 int	nb_pipe(char *input);
-int	*init_pipe(int end[2]);
-void	exec_pipe(char *input, char **envp);
+int	init_pipe(int **end, int i);
+void	exec_pipe(char **input, char **envp, int nb_pipe);
 
 // path.c
 int					find_path(char **envp, char *to_find);

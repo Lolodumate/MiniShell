@@ -9,6 +9,9 @@ SRCS = 	code.c \
 		path.c\
 		pipe.c \
 		process.c \
+		execute.c \
+		free.c \
+		error.c \
 		libft/ft_calloc.c\
 		libft/ft_memset.c\
 		libft/ft_split.c\
@@ -18,9 +21,6 @@ SRCS = 	code.c \
 		libft/ft_substr.c\
 		libft/ft_strchr.c\
 		libft/ft_strdup.c\
-		execute.c \
-		free.c \
-		error.c \
 
 
 SRCS_DIR = src/

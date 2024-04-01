@@ -96,7 +96,7 @@ void				update_token_values(t_env *env, t_tok *lst);
 void				free_str(char *str);
 void				free_double_str(char **str);
 void				free_list(t_tok *lst);
-
+void				free_end(int **end, int n);
 // error.c
 void				exit_error(const char *error);
 

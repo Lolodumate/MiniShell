@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include "exec.h"
 
 // affiche la string et le type de chaque maiilon d une liste chainees
 void	print_tab_tok(t_tok *tok)
@@ -73,6 +74,14 @@ void	print_double_tab(char **str)
 	printf("\n==========================================\n\n\n");
 }
 
+static char     **get_cmd(char *input)
+{
+	char    **cmd;
+
+	cmd = ft_split(input, '|');
+	return (cmd);
+}
+
 int	main(int ac, char **av, char **envp)
 {
 	char	*input;
@@ -96,7 +105,7 @@ int	main(int ac, char **av, char **envp)
 			if (input)
 				add_history(input);
 			lst = is_token(input);
-			exec_command(input, paths);
+			exec_pipe(get_cmd(input), paths, nb_pipe(input));
 			if (check(&lst) == true && parsing(input) == 1)
 			{
 				update_token_values(env, &lst);
