@@ -1,60 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   free.c                                             :+:      :+:    :+:   */
+/*   ft_strlen.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdmessa <abdmessa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/13 15:52:15 by laroges           #+#    #+#             */
-/*   Updated: 2024/04/04 08:11:56 by abdmessa         ###   ########.fr       */
+/*   Created: 2024/04/04 08:16:18 by abdmessa          #+#    #+#             */
+/*   Updated: 2024/04/04 08:17:05 by abdmessa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	free_list(t_tok *lst)
+size_t	ft_strlen(const char *s)
 {
-	t_tok	*tmp;
-
-	while (lst)
-	{
-		tmp = lst;
-		lst = lst->next;
-		free(tmp);
-	}
-}
-
-void	free_str(char *str)
-{
-	if (!str)
-		return ;
-	free(str);
-	str = NULL;
-}
-
-void	free_double_str(char **str)
-{
-	int	i;
+	size_t i;
 
 	i = 0;
-	while (str[i])
-	{
-		free(str[i]);
-		str[i] = NULL;
+	while (s[i])
 		i++;
-	}
-	free(str);
-	str = NULL;
-}
-
-void	free_end(int **end, int n)
-{
-	int	i;
-
-	i = -1;
-	if (!end)
-		return ;
-	while (++i < n)
-		free(end[i]);
-	free(end);
+	return (i);
 }

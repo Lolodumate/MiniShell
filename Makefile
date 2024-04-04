@@ -7,11 +7,6 @@ SRCS = 	code.c \
 		token.c\
 		utils_token.c\
 		path.c\
-		pipe.c \
-		process.c \
-		execute.c \
-		free.c \
-		error.c \
 		libft/ft_calloc.c\
 		libft/ft_memset.c\
 		libft/ft_split.c\
@@ -21,6 +16,14 @@ SRCS = 	code.c \
 		libft/ft_substr.c\
 		libft/ft_strchr.c\
 		libft/ft_strdup.c\
+		libft/ft_isalnum.c\
+		libft/ft_strlen.c\
+		utils_expand.c\
+		execute.c \
+		free.c \
+		pipe.c \
+		process.c\
+		error.c\
 
 
 SRCS_DIR = src/
@@ -65,7 +68,7 @@ $(NAME): $(OBJS)
 
 
 $(OBJS_DIR)%.o: $(SRCS_DIR)%.c
-	@$(CC) $(CFLAGS) -c $< -o $@
+	@$(CC) $(CFLAGS) -c $< -o $@ 
 
 
 clean:

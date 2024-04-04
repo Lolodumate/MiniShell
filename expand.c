@@ -6,7 +6,7 @@
 /*   By: abdmessa <abdmessa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 21:20:54 by abdmessa          #+#    #+#             */
-/*   Updated: 2024/03/28 09:52:38 by abdmessa         ###   ########.fr       */
+/*   Updated: 2024/04/04 08:24:01 by abdmessa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,111 +23,59 @@ int	ft_strcmp(char *s1, char *s2)
 	}
 	return (s1[i] - s2[i]);
 }
-// a gerer | pour linstant lexpand est provisoir
-// si syntaxe mauvaise remplacer la key invalide par une chaine vide
-// si apres le $ key correct strcat lst->value
-// si key invalide strjoin chaine vide strdup "" tant que
 
-char	*extract_var_name(char *str, int start_index)
+// remplacer la chaîne dans la liste pour les value plus tard
+void	replace_str_in_list(t_tok *lst, char *new_str)
 {
-	size_t	j;
+	free(lst->str);
+	lst->str = new_str;
+}
 
-	j = start_index + 1;
-	while (str[j] && (isalnum(str[j]) || str[j] == '_' || str[j] == '$'))
-	{
-		j++;
-	}
-	if (j > strlen(str))
+// passage à la liste suivante
+t_tok	*handle_next_list(t_tok *lst)
+{
+	if (!lst->next)
 		return (NULL);
-	return (strndup(str + start_index + 1, j - start_index - 1));
+	return (lst->next);
 }
 
-// cherche la value de la variable dans env
-char	*find_env_value(t_env *env, char *var_name)
+// fonction principale de lexpand AKA la norminette
+void	process_var_expansion(t_env *env, t_tok *lst)
 {
-	t_env	*env_tmp;
+	char	var_name[1000];
+	t_var_expand	var;
 
-	env_tmp = env;
-	while (env_tmp)
+	var.var_start = find_next_var(lst->str);
+	while (var.var_start && *var.var_start)
 	{
-		if (strcmp(env_tmp->key, var_name) == 0)
+		if ((!*(var.var_start + 1) || *(var.var_start + 1) == ' ') && *var.var_start == '$')
 		{
-			return (strdup(env_tmp->value));
+			lst = handle_next_list(lst);
+			if (!lst)
+				return ;
+			var.var_start = find_next_var(lst->str);
+			if (!var.var_start)
+				break ;
 		}
-		env_tmp = env_tmp->next;
+		extract_var_name(var.var_start, var_name);
+		var.var_value = find_var_value(env, var_name);
+		if (!var.var_value)
+			var.var_value = "";
+		var.var_end = var.var_start + ft_strlen(var_name) + 1;
+		var.new_str = construct_new_str(lst->str, var.var_start, var.var_end, var.var_value);
+		replace_str_in_list(lst, var.new_str);
+		var.var_start = find_next_var(lst->str);
 	}
-	return (NULL);
 }
 
-void	replace_var_with_value(t_tok *lst_tmp, int start_index, int end_index,
-		char *new_str)
+void	expand(t_env *env, t_tok *lst)
 {
-	char	*prefix;
-	char	*suffix;
-	int		new_str_len;
+	t_tok	*tmp_lst;
 
-	prefix = strndup(lst_tmp->str, start_index);
-	suffix = strdup(lst_tmp->str + end_index);
-	free(lst_tmp->str);
-	new_str_len = strlen(new_str);
-	lst_tmp->str = malloc(strlen(prefix) + new_str_len - 1 + strlen(suffix)
-			+ 1);
-	if (lst_tmp->str)
+	tmp_lst = lst;
+	while (tmp_lst)
 	{
-		strcpy(lst_tmp->str, prefix);
-		strcat(lst_tmp->str, new_str);
-		strcat(lst_tmp->str, suffix - 1);
-	}
-	free(prefix);
-	free(suffix);
-}
-
-// switch avc la value
-void	update_token_values(t_env *env, t_tok *lst)
-{
-	t_tok	*lst_tmp;
-	int		i;
-	int		start_index;
-	char	*var_name;
-	char	*new_str;
-	int		end_index;
-
-	lst_tmp = lst;
-	while (lst_tmp)
-	{
-		i = 0;
-		while (lst_tmp->str[i])
-		{
-			if (lst_tmp->str[i] == '$')
-			{
-				start_index = i;
-				var_name = extract_var_name(lst_tmp->str, start_index);
-				if (var_name)
-				{
-					new_str = find_env_value(env, var_name);
-					if (new_str)
-					{
-						end_index = start_index + strlen(var_name);
-						replace_var_with_value(lst_tmp, start_index, end_index,
-							new_str);
-						free(new_str);
-					}
-					else
-						replace_var_with_value(lst_tmp, start_index, start_index
-							+ strlen(var_name) + 1, strdup(""));
-					free(var_name);
-					i = end_index;
-				}
-				else
-				{
-					replace_var_with_value(lst_tmp, start_index, start_index
-						+ 1, strdup(""));
-					i++;
-				}
-			}
-			else
-				i++;
-		}
-		lst_tmp = lst_tmp->next;
+		process_var_expansion(env, tmp_lst);
+		tmp_lst = tmp_lst->next;
 	}
 }

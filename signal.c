@@ -1,60 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   free.c                                             :+:      :+:    :+:   */
+/*   signal.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abdmessa <abdmessa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/13 15:52:15 by laroges           #+#    #+#             */
-/*   Updated: 2024/04/04 08:11:56 by abdmessa         ###   ########.fr       */
+/*   Created: 2024/04/04 15:46:16 by abdmessa          #+#    #+#             */
+/*   Updated: 2024/04/04 15:48:54 by abdmessa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	free_list(t_tok *lst)
+void	handle_signals(char *input, t_var_expand *shell)
 {
-	t_tok	*tmp;
-
-	while (lst)
+	if (g_signum == SIGINT)
 	{
-		tmp = lst;
-		lst = lst->next;
-		free(tmp);
+		shell->ret_value = 130;
+		g_signum = 0;
 	}
-}
-
-void	free_str(char *str)
-{
-	if (!str)
-		return ;
-	free(str);
-	str = NULL;
-}
-
-void	free_double_str(char **str)
-{
-	int	i;
-
-	i = 0;
-	while (str[i])
+	if (g_signum == SIGQUIT)
 	{
-		free(str[i]);
-		str[i] = NULL;
-		i++;
+		shell->ret_value = 131;
+		g_signum = 0;
 	}
-	free(str);
-	str = NULL;
-}
-
-void	free_end(int **end, int n)
-{
-	int	i;
-
-	i = -1;
-	if (!end)
-		return ;
-	while (++i < n)
-		free(end[i]);
-	free(end);
+	if (!input)
+		exit_and_free(input, shell, shell->ret_value);
 }

@@ -6,7 +6,7 @@
 /*   By: abdmessa <abdmessa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 17:20:17 by abdmessa          #+#    #+#             */
-/*   Updated: 2024/03/28 16:43:50 by laroges          ###   ########.fr       */
+/*   Updated: 2024/04/04 08:11:45 by abdmessa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@ void	print_tab_tok(t_tok *tok)
 		tmp = tmp->next;
 	}
 	printf("\n==============================================\n\n\n");
-	
 }
 
 char	**convert_lst_to_tab(t_tok *lst)
@@ -61,7 +60,6 @@ char	**convert_lst_to_tab(t_tok *lst)
 		i++;
 	}
 	tab[size] = NULL;
-	// free_list(lst);
 	return (tab);
 }
 
@@ -74,21 +72,13 @@ void	print_double_tab(char **str)
 	printf("\n==========================================\n\n\n");
 }
 
-static char     **get_cmd(char *input)
-{
-	char    **cmd;
-
-	cmd = ft_split(input, '|');
-	return (cmd);
-}
-
 int	main(int ac, char **av, char **envp)
 {
 	char	*input;
 	char	**paths;
 	t_env	*env;
 	t_tok	lst;
-	char	**tab;
+//	char	**tab;
 
 	(void)av;
 	paths = get_paths(envp);
@@ -104,14 +94,14 @@ int	main(int ac, char **av, char **envp)
 				continue ;
 			if (input)
 				add_history(input);
-			lst = is_token(input);
+			lst = *is_token(input);
 			exec_pipe(get_cmd(input), paths, nb_pipe(input));
 			if (check(&lst) == true && parsing(input) == 1)
 			{
-				update_token_values(env, &lst);
-				tab = convert_lst_to_tab(&lst);
-				print_double_tab(tab);
-				print_tab_tok(&lst);
+				expand(env, &lst);
+//				tab = convert_lst_to_tab(&lst);
+//				print_double_tab(tab);
+//				print_tab_tok(&lst);
 				free(input);
 			}
 		}

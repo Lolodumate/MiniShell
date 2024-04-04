@@ -6,7 +6,7 @@
 /*   By: abdmessa <abdmessa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 07:55:34 by abdmessa          #+#    #+#             */
-/*   Updated: 2024/03/28 05:52:13 by abdmessa         ###   ########.fr       */
+/*   Updated: 2024/04/04 08:16:41 by abdmessa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,28 +43,40 @@ void	ft_lstadd_back(t_env **lst, t_env *new)
 	}
 }
 
-size_t	ft_strlen(const char *s)
+t_env	*create_new_node(char *key, char *value)
 {
-	size_t	i;
+	t_env	*new_node;
 
-	i = 0;
-	while (s[i])
-		i++;
-	return (i);
+	new_node = ft_lstnew(key, value);
+	if (!new_node)
+		return (NULL);
+	return (new_node);
 }
 
+void	add_node_to_list(t_env **head, t_env **prev, t_env *new_node)
+{
+	if (!*head)
+	{
+		*head = new_node;
+	}
+	else
+	{
+		(*prev)->next = new_node;
+	}
+	*prev = new_node;
+}
+
+//	fonction principal qui recup lenv
 t_env	*grab_env(char **str)
 {
 	t_env	*head;
 	t_env	*prev;
-	t_env	*new_node;
 	int		i;
 	char	*equal_sign;
+	t_env	*new_node;
 
 	head = NULL;
 	prev = NULL;
-	new_node = NULL;
-	equal_sign = NULL;
 	i = 0;
 	while (str[i])
 	{
@@ -72,14 +84,10 @@ t_env	*grab_env(char **str)
 		if (equal_sign)
 		{
 			*equal_sign = '\0';
-			new_node = ft_lstnew(str[i], equal_sign + 1);
+			new_node = create_new_node(str[i], equal_sign + 1);
 			if (!new_node)
 				return (NULL);
-			if (!head)
-				head = new_node;
-			else
-				prev->next = new_node;
-			prev = new_node;
+			add_node_to_list(&head, &prev, new_node);
 		}
 		i++;
 	}

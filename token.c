@@ -6,115 +6,83 @@
 /*   By: abdmessa <abdmessa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 22:17:52 by abdmessa          #+#    #+#             */
-/*   Updated: 2024/03/28 05:52:58 by abdmessa         ###   ########.fr       */
+/*   Updated: 2024/04/04 08:02:36 by abdmessa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	ft_separator(char c)
+// Fonction pour traiter les opérateurs de redirection
+void	process_redirect_operators(t_tok **new, char *input, int *i)
 {
-	if (c != '|' && c != '>' && c != '<' && c != ' ' && c != '\t')
-		return (0);
-	return (1);
-}
-
-// compte word pour la tokenisation
-int	count_len_tok(char *input)
-{
-	int	i;
-
-	i = 0;
-	if (!input[i])
+	if (input[*i] == '|')
 	{
-		return (i);
+		ft_lstadd_back_tok(new, ft_lstnew_tok("|", PIPE));
+		(*i)++;
 	}
-	while (input[i] && !ft_separator(input[i]))
-		i++;
-	return (i);
-}
-
-// passe les caracteres en negatif afin de skip les quotes
-char	*tok_quote(char *input)
-{
-	int		i;
-	char	c;
-
-	i = -1;
-	while (input[++i])
+	else if (input[*i] == '>' && input[*i + 1] == '>')
 	{
-		if (input[i] == '"' || input[i] == '\'')
-		{
-			c = input[i];
-			i++;
-			while (input[i])
-			{
-				if (input[i] == c)
-					break ;
-				input[i] *= -1;
-				i++;
-			}
-		}
+		ft_lstadd_back_tok(new, ft_lstnew_tok(">>", DSUP));
+		*i += 2;
 	}
-	return (input);
+	else if (input[*i] == '<' && input[*i + 1] == '<')
+	{
+		ft_lstadd_back_tok(new, ft_lstnew_tok("<<", DINF));
+		*i += 2;
+	}
+	else if (input[*i] == '<')
+	{
+		ft_lstadd_back_tok(new, ft_lstnew_tok("<", INF));
+		(*i)++;
+	}
+	else if (input[*i] == '>')
+	{
+		ft_lstadd_back_tok(new, ft_lstnew_tok(">", SUP));
+		(*i)++;
+	}
 }
 
-// fonction qui tokenise et range chaque type dans un maillon puis renvoie un liste de ses derniers
+// Fonction pour traiter les mots
+void	process_words(t_tok **new, char *input, int *i)
+{
+	char	*word;
+	int		j;
 
-t_tok	is_token(char *input)
+	word = ft_calloc(sizeof(char), (count_len_tok(input + *i)) + 1);
+	if (!word)
+		return ;
+	j = 0;
+	while (input[*i] && !ft_separator(input[*i]))
+	{
+		word[j++] = input[(*i)++];
+	}
+	ft_lstadd_back_tok(new, ft_lstnew_tok(word, WORD));
+	free(word);
+}
+
+// Fonction principale pour l'analyse
+t_tok	*is_token(char *input)
 {
 	t_tok	*new;
 	int		i;
-	int		j;
-	char	*word;
 
-	i = 0;
-	j = 0;
-	word = NULL;
 	new = NULL;
+	i = 0;
 	input = tok_quote(input);
 	while (input[i])
 	{
-		if (input[i] == '|')
+		if (input[i] == '|' || input[i] == '>' || input[i] == '<')
 		{
-			ft_lstadd_back_tok(&new, ft_lstnew_tok("|", PIPE));
-			i++;
+			process_redirect_operators(&new, input, &i);
 		}
-		else if (input[i] && input[i + 1] != '\0' && input[i] == '>' && input[i
-				+ 1] == '>')
+		else if (!ft_separator(input[i]))
 		{
-			ft_lstadd_back_tok(&new, ft_lstnew_tok(">>", DSUP));
-			i += 2;
-		}
-		else if (input[i] && input[i + 1] != '\0' && input[i] == '<' && input[i
-				+ 1] == '<')
-		{
-			ft_lstadd_back_tok(&new, ft_lstnew_tok("<<", DINF));
-			i += 2;
-		}
-		else if (input[i] == '<')
-		{
-			ft_lstadd_back_tok(&new, ft_lstnew_tok("<", INF));
-			i++;
-		}
-		else if (input[i] == '>')
-		{
-			ft_lstadd_back_tok(&new, ft_lstnew_tok(">", SUP));
-			i++;
-		}
-		else if (input[i] && !ft_separator(input[i]))
-		{
-			word = ft_calloc(sizeof(char), (count_len_tok(input + i)) + 1);
-			if (!word)
-				return (*new);
-			j = 0;
-			while (input[i] && !ft_separator(input[i]))
-				word[j++] = input[i++];
-			ft_lstadd_back_tok(&new, ft_lstnew_tok(word, WORD));
-			free(word);
+			process_words(&new, input, &i);
 		}
 		else
+		{
 			i++;
+		}
 	}
-	return (*new);
+	return (new);
 }

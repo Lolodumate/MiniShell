@@ -13,7 +13,14 @@
 #include "minishell.h"
 #include "exec.h"
 
-void	exec_command(char *input, char **paths)
+char	**get_cmd(char *input)
+{
+	char	**cmd;
+	cmd = ft_split(input, '|');
+	return (cmd);
+}
+
+bool	exec_command(char *input, char **paths)
 {
 	char	*try_path;
 	char	**cmd;
@@ -23,11 +30,12 @@ void	exec_command(char *input, char **paths)
 	if (execve(try_path, cmd, NULL) == -1)
 	{
 		free_str(try_path);
-		perror("command not found");
-		exit(EXIT_FAILURE);
+	//	exit_error("command not found");
+		return (false);
 	}
 	free_str(try_path);
 	free_double_str(cmd);
+	return (true);
 }
 
 char	*find_the_right_path(char *input, char **paths)

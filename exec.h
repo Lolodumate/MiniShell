@@ -27,9 +27,19 @@
 # include <fcntl.h>
 # include <sys/wait.h>
 # include <unistd.h>
+# include <errno.h>
+
+typedef struct	s_pipe
+{
+	int		i;
+	int		nb_pipe;
+	int		**end;
+	char	*cmd;
+}		t_pipe;
 
 // execute.c
-void				exec_command(char *input, char **paths);
+char				**get_cmd(char *input);
+bool				exec_command(char *input, char **paths);
 char				*find_the_right_path(char *input, char **paths);
 
 // utils_exec.c
@@ -37,13 +47,16 @@ bool	redir(char *cmd); // Fonction qui determine si une commande contient une re
 
 // process.c
 int	close_pipe(int **end, int i, int j);
-void	child_process(char *cmd, int **end, int i, char **envp);
-void	parent_process(int **end, int i, int nb_pipe);
+bool	child_process(t_pipe p, char *cmd, char **envp, int *fd);
+void	parent_process(t_pipe p, int *fd);
+void	last_child_process(char *cmd, char **envp, int fd);
+void	last_parent_process(int fd);
 
 // pipe.c
-bool	is_pipe(char c);
+t_pipe	init_pipe_data(void);
 int	nb_pipe(char *input);
 int	init_pipe(int **end, int i);
+void	exec_no_pipe_command(char *cmd, char **envp);
 void	exec_pipe(char **input, char **envp, int nb_pipe);
 
 // path.c
