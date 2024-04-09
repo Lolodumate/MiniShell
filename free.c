@@ -55,6 +55,9 @@ void	free_end(int **end, int n)
 	if (!end)
 		return ;
 	while (++i < n)
-		free(end[i]);
+	{
+		if (end[i])
+			free(end[i]);
+	}
 	free(end);
 }

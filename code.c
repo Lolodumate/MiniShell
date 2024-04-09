@@ -75,13 +75,13 @@ void	print_double_tab(char **str)
 int	main(int ac, char **av, char **envp)
 {
 	char	*input;
-	char	**paths;
 	t_env	*env;
 	t_tok	lst;
-//	char	**tab;
+	t_cmd	cmd;
+	char	**tab;
 
 	(void)av;
-	paths = get_paths(envp);
+	cmd = init_cmd(cmd, &lst, envp);
 	if (ac == 1)
 	{
 		env = grab_env(envp);
@@ -95,15 +95,16 @@ int	main(int ac, char **av, char **envp)
 			if (input)
 				add_history(input);
 			lst = *is_token(input);
-			exec_pipe(get_cmd(input), paths, nb_pipe(input));
+			exec_input(cmd, input);
 			if (check(&lst) == true && parsing(input) == 1)
 			{
 				expand(env, &lst);
-//				tab = convert_lst_to_tab(&lst);
-//				print_double_tab(tab);
-//				print_tab_tok(&lst);
-				free(input);
+				tab = convert_lst_to_tab(&lst);
+				print_double_tab(tab);
+				print_tab_tok(&lst);
+				free(input); // Commentaire Laurent : ne faudrait-il pas mettre cette instruction apres le if ?
 			}
+			// Ici : free(input); >> Dans tous les cas il faut liberer la memoire de input.
 		}
 		free(env);
 	}

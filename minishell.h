@@ -17,7 +17,6 @@
 #  define READLINE_PROMPT "\033[92m minishell-1.42$ \033[0m"
 # endif
 
-# include "exec.h"
 # include <fcntl.h>
 # include <readline/history.h>
 # include <readline/readline.h>
@@ -28,11 +27,6 @@
 # include <sys/types.h>
 # include <sys/wait.h>
 # include <unistd.h>
-
-typedef struct s_data
-{
-	char			**paths;
-}					t_data;
 
 typedef struct s_env
 {
@@ -47,6 +41,9 @@ typedef struct s_tok
 	int				type;
 	struct s_tok	*next;
 }					t_tok;
+
+// L'inclusion de exec.h doit se faire apres la declaration de la structure t_tok pour me permettre d utiliser cette derniere.
+# include "exec.h"
 
 typedef struct s_list
 {
@@ -124,6 +121,7 @@ void				free_str(char *str);
 void				free_double_str(char **str);
 void				free_list(t_tok *lst);
 void				free_end(int **end, int n);
+
 // error.c
 void				exit_error(const char *error);
 
@@ -140,5 +138,8 @@ int					ft_strcmp(char	*s1, char *s2);
 void				*ft_calloc(size_t nmemb, size_t size);
 size_t				ft_strlcpy(char *dst, const char *src, size_t size);
 void				*ft_memset(void *s, int c, size_t n);
+void				ft_putchar_fd(char c, int fd);
+void				ft_putstr_fd(char *s, int fd);
+void				ft_putendl_fd(char *s, int fd);
 
 #endif

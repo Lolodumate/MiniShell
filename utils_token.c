@@ -92,3 +92,36 @@ t_tok	*ft_lstnew_tok(char *str, int type)
 	new->next = NULL;
 	return (new);
 }
+/* Commentaire Laurent : 
+ * 
+ * 	Fonction ft_lstnew_tok :
+ * 	- La protection de 'new' doit etre faite immediatement apres le malloc sinon le programme risque de crasher sur 'new->str'.
+ *	- Il faut egalement proteger le ft_calloc sur new->str.
+ *
+ * 	Comme ceci :
+ *
+
+t_tok   *ft_lstnew_tok(char *str, int type)
+{
+        t_tok   *new;
+
+        new = malloc(sizeof(t_tok));
+        if (!new)                                                                                                                           {
+                perror("malloc failed");
+                return (NULL);
+        }
+        new->str = ft_calloc(sizeof(char), ft_strlen(str)+1);
+	if (!new->str)
+	{
+                perror("ft_calloc failed");
+                return (NULL);
+	}
+        new->str = ft_strdup(str);
+        new->type = type;
+        new->next = NULL;
+        return (new);
+}
+
+ *
+ *
+ */

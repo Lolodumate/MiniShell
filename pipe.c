@@ -14,10 +14,10 @@
 #include "exec.h"
 
 /* Multipipes :
- * - Compter le nombre de pipes (int nb_pipe) dans l'input.
+ * - Compter le nombre de pipes (int cmd.nb_pipe) dans l'cmd.input[p.i]
  * - Creer un process enfant qui va stocker le resultat du processus dans son fd.
  * - Le parent va alors lire le fd et ecrire le resultat dans son propre fd.
- * - On recommence le processus autant de fois que necessaire (cf. nb_pipe).
+ * - On recommence le processus autant de fois que necessaire (cf. cmd.nb_pipe).
  *
  *
  *    ** File descriptors debugging tools:
@@ -26,134 +26,82 @@
  *       valgrind --trace-children=yes --track-fds=yes
  */
 
-t_pipe	init_pipe_data(void)
+// This function execute the right function following the command type
+void	exec_input(t_cmd cmd, char *input)
 {
-	t_pipe	p;
-
-	p.i = -1;
-	p.nb_pipe = 0;
-	p.end = NULL;
-	p.cmd = NULL;
-	return (p);
-}
-
-// Comptage du nombre de pipes entres dans la chaine de caracteres input
-int	nb_pipe(char *input)
-{
-	int		i;
-	int		n;
-
-	i = -1;
-	n = 0;
-	while (input[++i])
-	{
-		if (input[i] == '|')
-			n++;
-	}
-	return (n);
-}
-
-// Si le token est un '|' alors on ouvre un pipe avec cette fonction
-int	init_pipe(int **end, int i)
-{
-	if (pipe(end[i]) == -1)
-	{
-		// Ajouter fonction de liberation de la memoire avant de quitter
-		exit_error("pipe");
-	}
-	return (EXIT_SUCCESS);
-}
-
-void	exec_no_pipe_command(char *cmd, char **envp)
-{
-	pid_t		pid;
-
-	pid = fork();
-	if (pid == -1)
-	{
-		// Nettoyer la memoire
-		exit_error("pid exec_no_pipe_command");
-	}
-	if (pid == 0)
-		exec_command(cmd, envp);
+	cmd.type_cmd = get_type_command(cmd, input);
+	if (cmd.type_cmd == HEREDOC)
+		run_heredoc(cmd.lst);
 	else
-		wait(0);
+		exec_pipe(cmd, input);
+}
+
+// Sub function for exec_input
+static int	exec_pipe_in(t_cmd cmd, int fd, int status, pid_t *pid)
+{
+	if (pid[cmd.p.i] == 0)
+	{
+		if (cmd.p.i < cmd.nb_pipe)
+			child_process(cmd, cmd.cmdin[cmd.p.i], &fd);
+		else
+			exec_single_command(cmd, cmd.cmdin[cmd.p.i]);
+	}
+	else
+	{
+		parent_process(cmd, &fd);
+		waitpid(pid[cmd.p.i], &status, 0);
+		if (WIFEXITED(status))
+			WTERMSIG(status);
+	}
+	return (fd);
+}
+
+// Sub function for exec_input
+static int	exec_pipe_out(t_cmd cmd, int fd, int status, pid_t *pid)
+{
+	if (pid[cmd.p.i] == 0)
+	{
+		if (cmd.nb_pipe == 0)
+			last_child_process(cmd, cmd.cmdin[0], fd);
+		else if (cmd.nb_pipe > 0)
+			last_child_process(cmd, cmd.cmdin[cmd.p.i], fd);
+	}
+	else
+	{
+		last_parent_process(fd);
+		waitpid(pid[cmd.p.i], &status, 0);
+		if (WIFEXITED(status))
+			WTERMSIG(status);
+	}
+	return (fd);
 }
 
 // Multiple pipes function (version char **)
-void	exec_pipe(char **input, char **envp, int nb_pipe) // nb_pipe = nombre de pipes dans la ligne de commande
+//void	exec_pipe(t_tok *lst, char **input, char **envp, int cmd.nb_pipe) // cmd.nb_pipe = nombre de pipes dans la ligne de commande
+void	exec_pipe(t_cmd cmd, char *input) // cmd.nb_pipe = nombre de pipes dans la ligne de commande
 {
 	int		fd;
 	int		status;
 	pid_t		pid[1024];
-	t_pipe		p;
 
-	if (nb_pipe == 0)
-		exec_no_pipe_command(input[0], envp);
 	fd = dup(0);
-	p = init_pipe_data();
-	p.nb_pipe = nb_pipe;
-	if (nb_pipe > 0)
+	status = 0;
+	cmd = set_cmd(cmd, input);
+	while (++cmd.p.i <= cmd.nb_pipe)
 	{
-		p.end = (int **)malloc(sizeof(int *) * nb_pipe);
-		if (!p.end)
-		{
-			// Liberer la memoire
-			exit_error("malloc int **");
-		}
-	}
-	while ((++p.i < p.nb_pipe) && nb_pipe > 0)
-	{
-		p.end[p.i] = (int *)malloc(sizeof(int) * 2);
-		if (!p.end[p.i])
-		{
-			// Liberer la memoire
-			exit_error("malloc int *");
-		}
-		p.end[p.i][0] = 0;
-		p.end[p.i][1] = 0;
-	}
-	p.i = -1;
-	while (++p.i <= nb_pipe)
-	{
-		if (p.i < nb_pipe)
-			init_pipe(p.end, p.i);
-		pid[p.i] = fork();
-		if (pid[p.i] == -1)
+		if (cmd.p.i < cmd.nb_pipe)
+			init_pipe(cmd.p.end, cmd.p.i);
+		pid[cmd.p.i] = fork();
+		if (pid[cmd.p.i] == -1)
 		{
 			// Nettoyer  la memoire
-	//		free_end(end, nb_pipe);
+			free_end(cmd.p.end, cmd.nb_pipe);
 			exit_error("exec_pipe : pid");
 		}
-		if (input[p.i + 1])
-		{
-			if (pid[p.i] == 0)
-			{
-				if (p.i < nb_pipe)
-					child_process(p, input[p.i], envp, &fd);
-				else
-					exec_command(input[p.i], envp);
-			}
-			else
-			{
-				parent_process(p, &fd);
-				waitpid(pid[p.i], &status, 0);
-				if (WIFEXITED(status))
-					WTERMSIG(status);
-			}
-		}
-		else if (!input[p.i + 1])
-		{
-			if (pid[p.i] == 0)
-				last_child_process(input[1], envp, fd);
-			else
-			{
-				last_parent_process(fd);
-				waitpid(pid[p.i], &status, 0);
-				if (WIFEXITED(status))
-					WTERMSIG(status);
-			}
-		}
+		if (cmd.cmdin[cmd.p.i + 1])
+			fd = exec_pipe_in(cmd, fd, status, pid);
+		else if (!cmd.cmdin[cmd.p.i + 1])
+			fd = exec_pipe_out(cmd, fd, status, pid);
 	}
-	free_end(p.end, nb_pipe);
+	free_end(cmd.p.end, cmd.nb_pipe);
 }

@@ -13,28 +13,32 @@
 #include "minishell.h"
 #include "exec.h"
 
-char	**get_cmd(char *input)
+void	exec_command(t_cmd cmd, char *input)
 {
-	char	**cmd;
-	cmd = ft_split(input, '|');
-	return (cmd);
+//	if (cmd.type_cmd == BUILTIN)
+//		run_builtin(cmd, cmd.lst);
+	if (cmd.type_cmd == HEREDOC)
+		run_heredoc(cmd.lst);
+	else
+		exec_single_command(cmd, input);
 }
 
-bool	exec_command(char *input, char **paths)
+// Fonction d'execution d'une commande binaire simple
+bool	exec_single_command(t_cmd cmd, char *input)
 {
 	char	*try_path;
-	char	**cmd;
+	char	**command;
 	
-	cmd = ft_split(input, ' ');
-	try_path = find_the_right_path(input, paths);
-	if (execve(try_path, cmd, NULL) == -1)
+	command = ft_split(input, ' ');
+	try_path = find_the_right_path(input, cmd.paths);
+	if (execve(try_path, command, NULL) == -1)
 	{
 		free_str(try_path);
-	//	exit_error("command not found");
+		exit_error("command not found");
 		return (false);
 	}
 	free_str(try_path);
-	free_double_str(cmd);
+	free_double_str(command);
 	return (true);
 }
 
