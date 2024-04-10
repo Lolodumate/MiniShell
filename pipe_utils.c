@@ -15,6 +15,16 @@ t_pipe	init_pipe_data(int nb_pipe)
 	return (p);
 }
 
+void	close_pipe(t_cmd cmd, int i, int j)
+{
+	if (!cmd.p.end)
+		return ;
+	if (!cmd.p.end[i][j])
+		return ;
+	if (close(cmd.p.end[i][j]) == -1)
+		clean_exit(cmd, "close pipe", EXIT_FAILURE);
+}
+
 // Comptage du nombre de pipes entres dans la chaine de caracteres input
 int	nb_pipe(char *input)
 {
@@ -32,13 +42,10 @@ int	nb_pipe(char *input)
 }
 
 // Si le token est un '|' alors on ouvre un pipe avec cette fonction
-int	init_pipe(int **end, int i)
+int	init_pipe(t_cmd cmd, int i)
 {
-	if (pipe(end[i]) == -1)
-	{
-		// Ajouter fonction de liberation de la memoire avant de quitter
-		exit_error("pipe");
-	}
+	if (pipe(cmd.p.end[i]) == -1)
+		clean_exit(cmd, "pipe", EXIT_FAILURE);
 	return (EXIT_SUCCESS);
 }
 

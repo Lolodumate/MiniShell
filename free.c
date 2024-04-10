@@ -12,6 +12,8 @@
 
 #include "minishell.h"
 
+// Commentaire Laurent : Fonction inutile car la structure t_tok lst dans code.c n'est pas un pointeur
+/*
 void	free_list(t_tok *lst)
 {
 	t_tok	*tmp;
@@ -22,7 +24,20 @@ void	free_list(t_tok *lst)
 		lst = lst->next;
 		free(tmp);
 	}
+}*/
+
+void	free_env(t_env *lst)
+{
+	t_env	*tmp;
+
+	while (lst)
+	{
+		tmp = lst;
+		lst = lst->next;
+		free(tmp);
+	}
 }
+
 
 void	free_str(char *str)
 {

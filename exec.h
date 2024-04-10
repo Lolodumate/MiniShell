@@ -57,10 +57,12 @@ typedef struct	s_cmd
 	t_pipe		p;
 	t_cmd_type	type_cmd;
 	t_tok		*lst;
+	t_env		*env;
 }	t_cmd;
 
 // execute_utils.c
-t_cmd	init_cmd(t_cmd cmd, t_tok *lst, char **envp);
+void	handle_dup2(t_cmd cmd, int old_fd, int new_fd);
+t_cmd	init_cmd(t_cmd cmd, t_tok *lst, t_env *env, char **envp);
 t_cmd	set_cmd(t_cmd cmd, char *input);
 char	**get_cmd(char *input);
 int				get_type_command(t_cmd cmd, char *input);
@@ -73,16 +75,16 @@ char	*find_the_right_path(char *input, char **paths);
 // Pipe management ************************************************************
 
 // process.c
-void	close_pipe(int **end, int i, int j);
 void	child_process(t_cmd cmd, char *input, int *fd);
 void	parent_process(t_cmd cmd, int *fd);
 void	last_child_process(t_cmd cmd, char *input, int fd);
-void	last_parent_process(int fd);
+void	last_parent_process(t_cmd cmd, int fd);
 
 // pipe_utils.c
 t_pipe	init_pipe_data(int nb_pipe);
+void	close_pipe(t_cmd cmd, int i, int j);
 int				nb_pipe(char *input);
-int				init_pipe(int **end, int i);
+int				init_pipe(t_cmd cmd, int i);
 int				**set_pipe(t_pipe p, int nb_pipe);
 
 // pipe.c

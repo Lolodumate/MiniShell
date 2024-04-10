@@ -81,7 +81,8 @@ int	main(int ac, char **av, char **envp)
 	char	**tab;
 
 	(void)av;
-	cmd = init_cmd(cmd, &lst, envp);
+	env = NULL;
+	cmd = init_cmd(cmd, &lst, env, envp);
 	if (ac == 1)
 	{
 		env = grab_env(envp);
@@ -106,6 +107,7 @@ int	main(int ac, char **av, char **envp)
 			}
 			// Ici : free(input); >> Dans tous les cas il faut liberer la memoire de input.
 		}
-		free(env);
+		clean_all(cmd); // Il reste des leaks sur des fonctions exec, les listes chainees et les signaux
+//		free(env);
 	}
 }

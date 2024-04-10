@@ -119,11 +119,14 @@ void				expand(t_env *env, t_tok *lst);
 // free.c
 void				free_str(char *str);
 void				free_double_str(char **str);
-void				free_list(t_tok *lst);
+//void				free_list(t_tok *lst); // Voir commentaire dans free.c 
+void				free_env(t_env *lst);
 void				free_end(int **end, int n);
 
 // error.c
-void				exit_error(const char *error);
+void				clean_exit(t_cmd cmd, const char *message, int exit_code);
+void				clean_all(t_cmd cmd);
+//void				exit_error(const char *error);
 
 // ************ libft functions **************************
 

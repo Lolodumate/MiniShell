@@ -68,7 +68,7 @@ static int	exec_pipe_out(t_cmd cmd, int fd, int status, pid_t *pid)
 	}
 	else
 	{
-		last_parent_process(fd);
+		last_parent_process(cmd, fd);
 		waitpid(pid[cmd.p.i], &status, 0);
 		if (WIFEXITED(status))
 			WTERMSIG(status);
@@ -90,14 +90,10 @@ void	exec_pipe(t_cmd cmd, char *input) // cmd.nb_pipe = nombre de pipes dans la 
 	while (++cmd.p.i <= cmd.nb_pipe)
 	{
 		if (cmd.p.i < cmd.nb_pipe)
-			init_pipe(cmd.p.end, cmd.p.i);
+			init_pipe(cmd, cmd.p.i);
 		pid[cmd.p.i] = fork();
 		if (pid[cmd.p.i] == -1)
-		{
-			// Nettoyer  la memoire
-			free_end(cmd.p.end, cmd.nb_pipe);
-			exit_error("exec_pipe : pid");
-		}
+			clean_exit(cmd, "exec_pipe : pid", EXIT_FAILURE);
 		if (cmd.cmdin[cmd.p.i + 1])
 			fd = exec_pipe_in(cmd, fd, status, pid);
 		else if (!cmd.cmdin[cmd.p.i + 1])

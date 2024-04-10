@@ -34,7 +34,7 @@ bool	exec_single_command(t_cmd cmd, char *input)
 	if (execve(try_path, command, NULL) == -1)
 	{
 		free_str(try_path);
-		exit_error("command not found");
+		clean_exit(cmd, "command not found", EXIT_FAILURE);
 		return (false);
 	}
 	free_str(try_path);
